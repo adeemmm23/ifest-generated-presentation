@@ -29,7 +29,7 @@ Sub ProcessPrizeCategory(id As Long, prize As String)
     DeleteSlide id
     Exit Sub
 PathError:
-    MsgBox "Please check the " + prize + " path, if you don't want " + prize + " just make an empty file '" + prize + ".csv' to remove this error"
+    MsgBox "Please check the " + prize + " path, if you don't want " + prize + " just make an empty file '.\files\" + prize + ".csv' to remove this error"
 End Sub
 Sub GenerateSlide(id As Long, text As Variant)
     Dim newSlide As SlideRange
