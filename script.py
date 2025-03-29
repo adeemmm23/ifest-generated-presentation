@@ -8,14 +8,6 @@ os.makedirs(FOLDER, exist_ok=True)
 for filename in os.listdir('files'):
     os.remove(f'{FOLDER}/{filename}')
 
-awards_index: dict[str, int] = {
-    "honorable": 7,
-    "bronze": 9,
-    "silver": 11,
-    "gold": 13,
-    "top10": 15
-}
-
 
 def csv_to_dict(filename: str) -> dict[str, list[list[str]]]:
     # Read CSV, preserving blank lines
@@ -42,19 +34,15 @@ def csv_to_dict(filename: str) -> dict[str, list[list[str]]]:
 
 
 def main():
-    df = pd.read_csv('data.csv')
-
     projects = csv_to_dict('projects.csv')
 
     for award, namesList in projects.items():
-        with open(f'{FOLDER}/{award.lower()}.txt', 'w',  encoding="utf-8") as f:
+        with open(f'{FOLDER}/{award.lower()}.csv', 'w',  encoding="utf-8") as f:
             for names in namesList:
-                f.write(f'generateSlide {awards_index[award.lower()]}, "')
                 for index, name in enumerate(names):
                     f.write(f'{name}')
                     if index != len(names) - 1:
-                        f.write('" + vbNewLine + "')
-                f.write('"')
+                        f.write(' & ')
                 f.write('\n')
 
 

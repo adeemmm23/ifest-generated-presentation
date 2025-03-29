@@ -1,15 +1,18 @@
 Sub Main()
-    ProcessPrizeCategory 13, "gold"
-    ProcessPrizeCategory 11, "silver"
-    ProcessPrizeCategory 9, "bronze"
-    ProcessPrizeCategory 7, "honorable"
+    ProcessPrizeCategory 391, "top3"
+    ProcessPrizeCategory 271, "top10"
+    ProcessPrizeCategory 291, "gold"
+    ProcessPrizeCategory 293, "silver"
+    ProcessPrizeCategory 388, "bronze"
+    ProcessPrizeCategory 398, "honorable"
 End Sub
-Sub ProcessPrizeCategory(slideNumber As Integer, prize As String)
+Sub ProcessPrizeCategory(id As Long, prize As String)
     Const ROW_DELIMITER As String = vbCrLf
     Const COL_DELIMITER As String = ","
     Const SEPARATOR As String = " & "
     
     Dim filePath As String: filePath = ActivePresentation.Path & "\files\" & prize & ".csv"
+    On Error GoTo PathError
     Dim sArr: sArr = TextFileToArray(filePath, ROW_DELIMITER)
     If IsEmpty(sArr) Then Exit Sub
     
@@ -20,16 +23,23 @@ Sub ProcessPrizeCategory(slideNumber As Integer, prize As String)
         If Not IsEmpty(Data(i, 1)) Then
             Dim cleanedText As String
             cleanedText = Replace(Data(i, 1), SEPARATOR, vbNewLine)
-            GenerateSlide slideNumber, cleanedText
+            GenerateSlide id, cleanedText
         End If
     Next i
+    DeleteSlide id
+    Exit Sub
+PathError:
+    MsgBox "Please check the " + prize + " path, if you don't want " + prize + " just make an empty file '" + prize + ".csv' to remove this error"
 End Sub
-Sub GenerateSlide(index As Integer, text As Variant)
+Sub GenerateSlide(id As Long, text As Variant)
     Dim newSlide As SlideRange
     Dim currentText As Shape
-    Set newSlide = ActivePresentation.Slides(index).Duplicate
+    Set newSlide = ActivePresentation.Slides.FindBySlideID(id).Duplicate
     Set currentText = newSlide.Shapes("names")
     currentText.TextFrame.TextRange.text = text
+End Sub
+Sub DeleteSlide(id As Long)
+    ActivePresentation.Slides.FindBySlideID(id).Delete
 End Sub
 Function TextFileToArray( _
     ByVal filePath As String, _
